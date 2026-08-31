@@ -1,0 +1,1303 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>CareAI | Healthcare Assistant</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: linear-gradient(135deg, #e8f5f3, #eef5ff);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #17202a;
+        }
+
+        /* ==============================
+           MAIN APP
+        ============================== */
+
+        .app {
+            width: 95%;
+            max-width: 1050px;
+            height: 700px;
+            background: white;
+            border-radius: 22px;
+            overflow: hidden;
+            display: flex;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.12);
+        }
+
+        /* ==============================
+           SIDEBAR
+        ============================== */
+
+        .sidebar {
+            width: 275px;
+            background: #0f766e;
+            color: white;
+            padding: 30px 22px;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .subtitle {
+            font-size: 13px;
+            line-height: 1.5;
+            opacity: 0.85;
+            margin-bottom: 32px;
+        }
+
+        .info-card {
+            background: rgba(255, 255, 255, 0.13);
+            border-radius: 14px;
+            padding: 16px;
+            margin-bottom: 15px;
+            font-size: 13px;
+            line-height: 1.7;
+        }
+
+        .info-card strong {
+            font-size: 15px;
+        }
+
+        /* ==============================
+           CHAT AREA
+        ============================== */
+
+        .chat-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+        }
+
+        /* HEADER */
+
+        .header {
+            height: 78px;
+            border-bottom: 1px solid #e8e8e8;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 24px;
+        }
+
+        .header-left h2 {
+            font-size: 21px;
+            margin-bottom: 5px;
+        }
+
+        .status-online {
+            font-size: 12px;
+            color: #0f766e;
+        }
+
+        .new-chat-btn {
+            background: white;
+            color: #0f766e;
+            border: 1px solid #0f766e;
+            padding: 9px 13px;
+            border-radius: 9px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .new-chat-btn:hover {
+            background: #e8f5f3;
+        }
+
+        /* ==============================
+           CHAT
+        ============================== */
+
+        #chat {
+            flex: 1;
+            overflow-y: auto;
+            padding: 25px;
+            background: #fafafa;
+        }
+
+        .message {
+            display: flex;
+            margin-bottom: 17px;
+        }
+
+        .message.user {
+            justify-content: flex-end;
+        }
+
+        .bubble {
+            max-width: 76%;
+            padding: 13px 16px;
+            border-radius: 17px;
+            line-height: 1.55;
+            font-size: 14px;
+            white-space: pre-wrap;
+        }
+
+        .ai .bubble {
+            background: #e7f5f3;
+            border-bottom-left-radius: 5px;
+        }
+
+        .user .bubble {
+            background: #0f766e;
+            color: white;
+            border-bottom-right-radius: 5px;
+        }
+
+        /* ==============================
+           TRIAGE
+        ============================== */
+
+        .triage {
+            margin-top: 8px;
+            font-size: 11px;
+            font-weight: bold;
+            display: inline-block;
+            padding: 5px 9px;
+            border-radius: 20px;
+        }
+
+        .triage-mild {
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .triage-urgent {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .triage-critical {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        /* ==============================
+           EMERGENCY BOX
+        ============================== */
+
+        .emergency-box {
+            background: #fff1f2;
+            border: 1px solid #fecdd3;
+            color: #9f1239;
+            border-radius: 13px;
+            padding: 15px;
+            margin: 0 25px 15px;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .emergency-box strong {
+            display: block;
+            font-size: 15px;
+            margin-bottom: 5px;
+        }
+
+        /* ==============================
+           APPOINTMENT
+        ============================== */
+
+        #appointmentBox {
+            display: none;
+            background: white;
+            border-top: 1px solid #e5e5e5;
+            padding: 18px 24px;
+        }
+
+        .appointment-title {
+            color: #0f766e;
+            font-size: 17px;
+            font-weight: bold;
+            margin-bottom: 4px;
+        }
+
+        .appointment-subtitle {
+            color: #666;
+            font-size: 12px;
+            margin-bottom: 13px;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 9px;
+            margin-bottom: 9px;
+        }
+
+        .form-row input {
+            flex: 1;
+            min-width: 0;
+            padding: 11px;
+            border: 1px solid #d9d9d9;
+            border-radius: 9px;
+            outline: none;
+            font-size: 13px;
+        }
+
+        .form-row input:focus {
+            border-color: #0f766e;
+        }
+
+        .book-btn {
+            background: #0f766e;
+            color: white;
+            border: none;
+            padding: 11px 18px;
+            border-radius: 9px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .book-btn:hover {
+            background: #0b5f59;
+        }
+
+        #bookingMessage {
+            font-size: 12px;
+            margin-top: 8px;
+        }
+
+        .booking-success {
+            color: #166534;
+        }
+
+        .booking-error {
+            color: #b91c1c;
+        }
+
+        /* ==============================
+           INPUT
+        ============================== */
+
+        .input-area {
+            display: flex;
+            gap: 9px;
+            padding: 16px 20px;
+            border-top: 1px solid #e5e5e5;
+            background: white;
+        }
+
+        #message {
+            flex: 1;
+            padding: 13px 15px;
+            border: 1px solid #d9d9d9;
+            border-radius: 12px;
+            outline: none;
+            font-size: 14px;
+        }
+
+        #message:focus {
+            border-color: #0f766e;
+        }
+
+        .send-btn {
+            background: #0f766e;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 0 21px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .send-btn:hover {
+            background: #0b5f59;
+        }
+
+        .send-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        /* ==============================
+           TYPING
+        ============================== */
+
+        .typing {
+            color: #777;
+            font-size: 12px;
+            padding: 5px 2px;
+        }
+
+        /* ==============================
+           MOBILE
+        ============================== */
+
+        @media (max-width: 720px) {
+
+            body {
+                align-items: stretch;
+            }
+
+            .app {
+                width: 100%;
+                height: 100vh;
+                border-radius: 0;
+            }
+
+            .sidebar {
+                display: none;
+            }
+
+            .header {
+                padding: 0 15px;
+            }
+
+            #chat {
+                padding: 18px;
+            }
+
+            .bubble {
+                max-width: 88%;
+            }
+
+            .form-row {
+                flex-direction: column;
+            }
+
+            .book-btn {
+                width: 100%;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+<div class="app">
+
+
+    <!-- ==========================================
+         SIDEBAR
+    =========================================== -->
+
+    <aside class="sidebar">
+
+        <div class="logo">
+            🏥 CareAI
+        </div>
+
+        <div class="subtitle">
+            AI Patient Pre-Diagnosis & Triage Assistant
+        </div>
+
+
+        <div class="info-card">
+
+            <strong>How it works</strong>
+
+            <br><br>
+
+            1️⃣ Describe your symptoms
+
+            <br>
+
+            2️⃣ AI asks up to 3 questions
+
+            <br>
+
+            3️⃣ AI assesses urgency
+
+            <br>
+
+            4️⃣ Book an appointment
+
+            <br>
+
+            5️⃣ Receive confirmation by email
+
+        </div>
+
+
+        <div class="info-card">
+
+            <strong>⚠️ Important</strong>
+
+            <br><br>
+
+            CareAI provides preliminary
+            information and triage only.
+
+            It does not provide a definitive
+            medical diagnosis.
+
+        </div>
+
+
+        <div class="info-card">
+
+            <strong>🚨 Emergency</strong>
+
+            <br><br>
+
+            If symptoms may be life-threatening,
+            seek emergency medical care
+            immediately.
+
+        </div>
+
+    </aside>
+
+
+    <!-- ==========================================
+         CHAT
+    =========================================== -->
+
+    <main class="chat-area">
+
+
+        <!-- HEADER -->
+
+        <header class="header">
+
+            <div class="header-left">
+
+                <h2>
+                    Healthcare Assistant
+                </h2>
+
+                <div class="status-online">
+                    ● AI Assistant Online
+                </div>
+
+            </div>
+
+
+            <button
+                class="new-chat-btn"
+                onclick="newChat()"
+            >
+                + New Chat
+            </button>
+
+        </header>
+
+
+        <!-- CHAT MESSAGES -->
+
+        <div id="chat">
+
+            <div class="message ai">
+
+                <div class="bubble">
+
+                    👋 Hello! I'm CareAI.
+
+                    <br><br>
+
+                    Please describe your symptoms
+                    and I'll ask a few questions to
+                    understand your situation.
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- EMERGENCY WARNING -->
+
+        <div
+            id="emergencyBox"
+            class="emergency-box"
+            style="display:none;"
+        >
+
+            <strong>
+                🚨 Possible Emergency
+            </strong>
+
+            Your symptoms may require immediate
+            medical attention. Please seek
+            emergency medical care immediately.
+            Do not delay emergency treatment
+            while waiting for an appointment.
+
+        </div>
+
+
+        <!-- ======================================
+             APPOINTMENT FORM
+        ======================================= -->
+
+        <div id="appointmentBox">
+
+            <div class="appointment-title">
+                📅 Book an Appointment
+            </div>
+
+            <div class="appointment-subtitle">
+                Please provide your details to
+                request an appointment.
+            </div>
+
+
+            <div class="form-row">
+
+                <input
+                    id="patientName"
+                    type="text"
+                    placeholder="Full name"
+                >
+
+                <input
+                    id="patientEmail"
+                    type="email"
+                    placeholder="Email address"
+                >
+
+            </div>
+
+
+            <div class="form-row">
+
+                <input
+                    id="appointmentDate"
+                    type="date"
+                >
+
+                <input
+                    id="appointmentTime"
+                    type="time"
+                >
+
+                <button
+                    class="book-btn"
+                    onclick="bookAppointment()"
+                >
+                    Book Appointment
+                </button>
+
+            </div>
+
+
+            <div id="bookingMessage"></div>
+
+        </div>
+
+
+        <!-- ======================================
+             MESSAGE INPUT
+        ======================================= -->
+
+        <div class="input-area">
+
+            <input
+                id="message"
+                type="text"
+                placeholder="Describe your symptoms..."
+                autocomplete="off"
+            >
+
+            <button
+                id="sendButton"
+                class="send-btn"
+                onclick="sendMessage()"
+            >
+                Send
+            </button>
+
+        </div>
+
+    </main>
+
+</div>
+
+
+<script>
+
+
+/* =================================================
+   PATIENT ID
+================================================= */
+
+let patientId =
+    "patient_" + Date.now();
+
+
+/* =================================================
+   INPUT ENTER KEY
+================================================= */
+
+document
+    .getElementById("message")
+    .addEventListener(
+        "keydown",
+        function(event) {
+
+            if (event.key === "Enter") {
+
+                sendMessage();
+
+            }
+
+        }
+    );
+
+
+/* =================================================
+   SEND MESSAGE
+================================================= */
+
+async function sendMessage() {
+
+
+    const input =
+        document.getElementById("message");
+
+
+    const sendButton =
+        document.getElementById("sendButton");
+
+
+    const message =
+        input.value.trim();
+
+
+    if (!message) {
+
+        return;
+
+    }
+
+
+    /* Show patient message */
+
+    addMessage(
+        message,
+        "user"
+    );
+
+
+    input.value = "";
+
+    sendButton.disabled = true;
+
+
+    /* Show typing */
+
+    const typing =
+        addMessage(
+            "AI is thinking...",
+            "ai"
+        );
+
+
+    try {
+
+
+        const response =
+            await fetch(
+                "http://127.0.0.1:8000/chat",
+                {
+
+                    method: "POST",
+
+                    headers: {
+
+                        "Content-Type":
+                            "application/json"
+
+                    },
+
+                    body: JSON.stringify({
+
+                        patient_id:
+                            patientId,
+
+                        message:
+                            message
+
+                    })
+
+                }
+            );
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                "Server error: " +
+                response.status
+            );
+
+        }
+
+
+        const data =
+            await response.json();
+
+
+        /* Remove typing */
+
+        typing.remove();
+
+
+        /* Add AI response */
+
+        addMessage(
+            data.response,
+            "ai",
+            data.triage
+        );
+
+
+        /* ==========================================
+           CRITICAL
+        =========================================== */
+
+        if (
+            data.triage === "critical"
+        ) {
+
+            document
+                .getElementById(
+                    "emergencyBox"
+                )
+                .style.display = "block";
+
+        }
+
+
+        /* ==========================================
+           BOOKING
+        =========================================== */
+
+        if (
+            data.show_booking === true
+        ) {
+
+            showAppointmentForm();
+
+        }
+
+
+    }
+
+    catch (error) {
+
+
+        typing.remove();
+
+
+        addMessage(
+            "❌ I couldn't connect to the healthcare server. Please make sure FastAPI is running.",
+            "ai"
+        );
+
+
+        console.error(
+            "Chat error:",
+            error
+        );
+
+    }
+
+
+    finally {
+
+        sendButton.disabled = false;
+
+        input.focus();
+
+    }
+
+}
+
+
+/* =================================================
+   ADD MESSAGE
+================================================= */
+
+function addMessage(
+    text,
+    type,
+    triage = ""
+) {
+
+
+    const chat =
+        document.getElementById(
+            "chat"
+        );
+
+
+    const message =
+        document.createElement(
+            "div"
+        );
+
+
+    message.className =
+        "message " + type;
+
+
+    const bubble =
+        document.createElement(
+            "div"
+        );
+
+
+    bubble.className =
+        "bubble";
+
+
+    bubble.innerText =
+        text;
+
+
+    message.appendChild(
+        bubble
+    );
+
+
+    /* ==========================================
+       TRIAGE BADGE
+    =========================================== */
+
+    if (
+        triage === "mild" ||
+        triage === "urgent" ||
+        triage === "critical"
+    ) {
+
+
+        const badge =
+            document.createElement(
+                "div"
+            );
+
+
+        badge.className =
+            "triage triage-" +
+            triage;
+
+
+        if (triage === "mild") {
+
+            badge.innerText =
+                "✓ MILD";
+
+        }
+
+
+        if (triage === "urgent") {
+
+            badge.innerText =
+                "⚠ URGENT";
+
+        }
+
+
+        if (triage === "critical") {
+
+            badge.innerText =
+                "🚨 CRITICAL";
+
+        }
+
+
+        bubble.appendChild(
+            document.createElement("br")
+        );
+
+
+        bubble.appendChild(
+            badge
+        );
+
+    }
+
+
+    chat.appendChild(
+        message
+    );
+
+
+    /* Scroll to bottom */
+
+    chat.scrollTop =
+        chat.scrollHeight;
+
+
+    return message;
+
+}
+
+
+/* =================================================
+   SHOW APPOINTMENT FORM
+================================================= */
+
+function showAppointmentForm() {
+
+
+    const appointmentBox =
+        document.getElementById(
+            "appointmentBox"
+        );
+
+
+    appointmentBox.style.display =
+        "block";
+
+
+    appointmentBox.scrollIntoView({
+        behavior: "smooth"
+    });
+
+}
+
+
+/* =================================================
+   BOOK APPOINTMENT
+================================================= */
+
+async function bookAppointment() {
+
+
+    const name =
+        document
+            .getElementById(
+                "patientName"
+            )
+            .value.trim();
+
+
+    const email =
+        document
+            .getElementById(
+                "patientEmail"
+            )
+            .value.trim();
+
+
+    const date =
+        document
+            .getElementById(
+                "appointmentDate"
+            )
+            .value;
+
+
+    const time =
+        document
+            .getElementById(
+                "appointmentTime"
+            )
+            .value;
+
+
+    const bookingMessage =
+        document.getElementById(
+            "bookingMessage"
+        );
+
+
+    /* Validate */
+
+    if (
+        !name ||
+        !email ||
+        !date ||
+        !time
+    ) {
+
+        bookingMessage.className =
+            "booking-error";
+
+        bookingMessage.innerText =
+            "⚠️ Please fill in all appointment fields.";
+
+        return;
+
+    }
+
+
+    /* Basic email validation */
+
+    const emailPattern =
+        /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+
+    if (
+        !emailPattern.test(email)
+    ) {
+
+        bookingMessage.className =
+            "booking-error";
+
+        bookingMessage.innerText =
+            "⚠️ Please enter a valid email address.";
+
+        return;
+
+    }
+
+
+    bookingMessage.className = "";
+
+    bookingMessage.innerText =
+        "⏳ Booking appointment...";
+
+
+    try {
+
+
+        const response =
+            await fetch(
+                "http://127.0.0.1:8000/book-appointment",
+                {
+
+                    method: "POST",
+
+                    headers: {
+
+                        "Content-Type":
+                            "application/json"
+
+                    },
+
+                    body: JSON.stringify({
+
+                        patient_id:
+                            patientId,
+
+                        name:
+                            name,
+
+                        email:
+                            email,
+
+                        date:
+                            date,
+
+                        time:
+                            time
+
+                    })
+
+                }
+            );
+
+
+        const data =
+            await response.json();
+
+
+        if (!response.ok) {
+
+            throw new Error(
+                data.detail ||
+                "Appointment booking failed."
+            );
+
+        }
+
+
+        /* Success */
+
+        bookingMessage.className =
+            "booking-success";
+
+
+        bookingMessage.innerText =
+            "✅ Appointment booked successfully! Confirmation email sent to " +
+            email;
+
+
+        /* Add confirmation to chat */
+
+        addMessage(
+
+            "✅ Appointment successfully booked!\n\n" +
+            "Date: " + date + "\n" +
+            "Time: " + time + "\n" +
+            "Confirmation email: " + email,
+
+            "ai"
+
+        );
+
+
+        /* Disable form after booking */
+
+        document
+            .getElementById(
+                "patientName"
+            )
+            .disabled = true;
+
+
+        document
+            .getElementById(
+                "patientEmail"
+            )
+            .disabled = true;
+
+
+        document
+            .getElementById(
+                "appointmentDate"
+            )
+            .disabled = true;
+
+
+        document
+            .getElementById(
+                "appointmentTime"
+            )
+            .disabled = true;
+
+
+    }
+
+    catch (error) {
+
+
+        bookingMessage.className =
+            "booking-error";
+
+
+        bookingMessage.innerText =
+            "❌ " + error.message;
+
+
+        console.error(
+            "Booking error:",
+            error
+        );
+
+    }
+
+}
+
+
+/* =================================================
+   NEW CHAT
+================================================= */
+
+function newChat() {
+
+
+    patientId =
+        "patient_" + Date.now();
+
+
+    document.getElementById(
+        "chat"
+    ).innerHTML = "";
+
+
+    document.getElementById(
+        "emergencyBox"
+    ).style.display = "none";
+
+
+    document.getElementById(
+        "appointmentBox"
+    ).style.display = "none";
+
+
+    document.getElementById(
+        "patientName"
+    ).value = "";
+
+
+    document.getElementById(
+        "patientEmail"
+    ).value = "";
+
+
+    document.getElementById(
+        "appointmentDate"
+    ).value = "";
+
+
+    document.getElementById(
+        "appointmentTime"
+    ).value = "";
+
+
+    document.getElementById(
+        "bookingMessage"
+    ).innerText = "";
+
+
+    document.getElementById(
+        "message"
+    ).value = "";
+
+
+    /* Re-enable booking fields */
+
+    document.getElementById(
+        "patientName"
+    ).disabled = false;
+
+
+    document.getElementById(
+        "patientEmail"
+    ).disabled = false;
+
+
+    document.getElementById(
+        "appointmentDate"
+    ).disabled = false;
+
+
+    document.getElementById(
+        "appointmentTime"
+    ).disabled = false;
+
+
+    /* Welcome message */
+
+    addMessage(
+
+        "👋 New conversation started.\n\n" +
+        "Please describe your symptoms and I'll ask up to three follow-up questions.",
+
+        "ai"
+
+    );
+
+
+    document
+        .getElementById(
+            "message"
+        )
+        .focus();
+
+}
+
+</script>
+
+</body>
+
+</html>
+```
